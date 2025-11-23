@@ -161,7 +161,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                 conversations.map((conv) => (
                   <div
                     key={conv.id}
-                    className="group relative flex items-start gap-3 px-3 py-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors duration-200 cursor-pointer"
+                    className="group relative flex items-start gap-3 px-3 py-2 rounded-lg hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 transition-all duration-200 cursor-pointer"
                   >
                     <Clock size={16} className="text-gray-400 dark:text-gray-600 flex-shrink-0 mt-1" />
                     <div className="flex-1 min-w-0">
