@@ -13,6 +13,7 @@ import {
 } from "firebase/auth";
 import { auth, db } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
+import { checkSecurityBeforeAuth } from "@/lib/securityCheck";
 
 export type Plan = "Gratuit" | "Plus" | "Entreprise";
 
