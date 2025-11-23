@@ -79,9 +79,7 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
-          boxShadow: isOpen
-            ? "0 25px 50px -12px rgba(0, 0, 0, 0.25)"
-            : "none",
+          boxShadow: isOpen ? "0 25px 50px -12px rgba(0, 0, 0, 0.25)" : "none",
         }}
       >
         {/* Menu Header */}

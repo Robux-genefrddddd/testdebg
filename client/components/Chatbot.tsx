@@ -25,7 +25,9 @@ export default function Chatbot() {
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const prefersDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     const initialDark = savedTheme ? savedTheme === "dark" : prefersDark;
     setIsDark(initialDark);
     updateTheme(initialDark);
@@ -97,7 +99,9 @@ export default function Chatbot() {
         <div className="flex items-center gap-3 sm:gap-4 min-w-0">
           {/* Minimalist Logo */}
           <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-black dark:bg-white flex items-center justify-center">
-            <span className="text-white dark:text-black font-bold text-lg">✦</span>
+            <span className="text-white dark:text-black font-bold text-lg">
+              ✦
+            </span>
           </div>
           {/* Title - Hidden on very small screens */}
           <div className="hidden sm:block min-w-0">
@@ -174,8 +178,14 @@ export default function Chatbot() {
               <div className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white px-5 py-3 rounded-2xl rounded-bl-sm border border-gray-200 dark:border-gray-800">
                 <div className="flex space-x-2">
                   <div className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                  <div className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"
+                    style={{ animationDelay: "0.2s" }}
+                  ></div>
+                  <div
+                    className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"
+                    style={{ animationDelay: "0.4s" }}
+                  ></div>
                 </div>
               </div>
             </div>
