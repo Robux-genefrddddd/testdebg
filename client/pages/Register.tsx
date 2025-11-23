@@ -303,7 +303,6 @@ export default function Register() {
                 }}
               >
                 <Turnstile
-                  ref={captchaRef}
                   sitekey={getSiteKey()}
                   onVerify={(token) => setCaptchaToken(token)}
                   onError={() => {
