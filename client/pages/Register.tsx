@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Turnstile from "react-turnstile";
@@ -13,7 +13,6 @@ export default function Register() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-  const captchaRef = useRef<any>(null);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -265,7 +264,7 @@ export default function Register() {
                   name="password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Au moins 6 caractères"
+                  placeholder="Au moins 6 caract��res"
                   disabled={isLoading}
                   className="w-full px-4 py-3 rounded-lg border focus:outline-none transition-all duration-300"
                   style={{
