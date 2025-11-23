@@ -61,16 +61,10 @@ export default function Register() {
   return (
     <div
       className="min-h-screen flex items-center justify-center px-4 py-8 relative overflow-hidden"
-      style={{ backgroundColor: "#000" }}
+      style={{
+        background: "linear-gradient(135deg, #0A84FF 0%, #000000 100%)",
+      }}
     >
-      {/* Animated background gradient */}
-      <div
-        className="absolute inset-0 opacity-30"
-        style={{
-          background: "radial-gradient(circle at 50% 50%, #0A84FF 0%, transparent 70%)",
-          animation: "float 15s ease-in-out infinite",
-        }}
-      />
 
       <div className="w-full max-w-md relative z-10">
         {/* Card Container */}
