@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Send, Plus, User } from "lucide-react";
 import Menu from "./Menu";
 import Sidebar from "./Sidebar";
+import InputArea from "./InputArea";
 
 interface Message {
   id: string;
