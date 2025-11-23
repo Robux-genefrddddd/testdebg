@@ -319,8 +319,56 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const canSendMessage = (): boolean => {
     if (!user) return false;
-    if (user.plan !== "Gratuit") return true;
-    return (user.messageCount || 0) < 100;
+    if (user.isBanned || user.isSuspended) return false;
+    const limit = user.messageLimit || (user.plan === "Gratuit" ? 10 : 1000);
+    return (user.messageCount || 0) < limit;
+  };
+
+  const verifyLicense = async (): Promise<LicenseVerificationResponse | null> => {
+    if (!user || !deviceId) return null;
+    try {
+      const licenseData = await LicenseManager.verifyLicense(
+        user.email,
+        deviceId,
+      );
+      if (licenseData) {
+        setWarnings(licenseData.warnings || []);
+        setAlerts(licenseData.alerts || []);
+        setMaintenanceMode(licenseData.maintenanceMode || false);
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                messageCount: licenseData.messageCount,
+                messageLimit: licenseData.messageLimit,
+                expiresAt: licenseData.expiresAt,
+                plan: licenseData.plan,
+                isBanned: licenseData.isBanned,
+                isSuspended: licenseData.isSuspended,
+              }
+            : null,
+        );
+      }
+      return licenseData;
+    } catch (err) {
+      console.error("License verification error:", err);
+      return null;
+    }
+  };
+
+  const activateLicense = async (licenseKey: string): Promise<void> => {
+    if (!user || !deviceId) {
+      throw new Error("User not authenticated or device ID not available");
+    }
+    try {
+      await LicenseManager.activateLicense(user.email, licenseKey, deviceId);
+      await verifyLicense();
+    } catch (err) {
+      const errorMsg =
+        err instanceof Error ? err.message : "License activation failed";
+      setError(errorMsg);
+      throw err;
+    }
   };
 
   return (
@@ -335,6 +383,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updatePlan,
         incrementMessageCount,
         canSendMessage,
+        verifyLicense,
+        activateLicense,
+        warnings,
+        alerts,
+        maintenanceMode,
         error,
       }}
     >
