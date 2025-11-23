@@ -10,6 +10,8 @@ import {
   Trash2,
   Clock,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Conversation {
   id: string;
@@ -24,6 +26,8 @@ interface MenuProps {
 
 export default function Menu({ isDark, onThemeToggle }: MenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
   const [conversations, setConversations] = useState<Conversation[]>([
     {
       id: "1",
@@ -97,52 +101,75 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
       {/* Hamburger Button - Only show on mobile */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden btn-icon-glass w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none p-1"
+        className="lg:hidden w-10 h-10 flex flex-col justify-center items-center gap-1.5 focus:outline-none p-1 rounded-lg transition-colors duration-200"
         aria-label="Toggle menu"
         aria-expanded={isOpen}
+        style={{
+          backgroundColor: "#1A1A1A",
+          color: "#FFFFFF",
+        }}
       >
         <span
-          className={`block w-5 h-0.5 bg-black dark:bg-white transition-all duration-300 origin-center ${
-            isOpen ? "rotate-45 translate-y-2" : ""
-          }`}
+          className={`block w-5 h-0.5 transition-all duration-300 origin-center`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            transform: isOpen ? "rotate(45deg) translateY(8px)" : "none",
+          }}
         />
         <span
-          className={`block w-5 h-0.5 bg-black dark:bg-white transition-all duration-300 ${
-            isOpen ? "opacity-0" : ""
-          }`}
+          className={`block w-5 h-0.5 transition-all duration-300`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            opacity: isOpen ? 0 : 1,
+          }}
         />
         <span
-          className={`block w-5 h-0.5 bg-black dark:bg-white transition-all duration-300 origin-center ${
-            isOpen ? "-rotate-45 -translate-y-2" : ""
-          }`}
+          className={`block w-5 h-0.5 transition-all duration-300 origin-center`}
+          style={{
+            backgroundColor: "#FFFFFF",
+            transform: isOpen ? "-rotate(45deg) -translateY(8px)" : "none",
+          }}
         />
       </button>
 
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-30 dark:bg-opacity-60 z-40 transition-opacity duration-300 backdrop-blur-sm"
+          className="fixed inset-0 z-40 transition-opacity duration-300 backdrop-blur-sm"
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+          }}
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Menu Sidebar */}
       <div
-        className={`fixed top-0 left-0 h-screen w-64 sm:w-72 bg-white dark:bg-black border-r border-gray-200 dark:border-gray-900 shadow-2xl z-50 transition-transform duration-300 ease-out overflow-hidden flex flex-col ${
+        className={`fixed top-0 left-0 h-screen w-64 sm:w-72 shadow-2xl z-50 transition-transform duration-300 ease-out overflow-hidden flex flex-col ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
+          backgroundColor: "#0A0A0A",
+          borderRight: "1px solid #1A1A1A",
           boxShadow: isOpen ? "0 25px 50px -12px rgba(0, 0, 0, 0.25)" : "none",
         }}
       >
         {/* Menu Header with New Conversation Button */}
-        <div className="px-6 py-6 border-b border-gray-200 dark:border-gray-900 flex-shrink-0">
-          <h2 className="text-lg font-bold text-black dark:text-white mb-4">
+        <div
+          className="px-6 py-6 border-b flex-shrink-0"
+          style={{ borderColor: "#1A1A1A" }}
+        >
+          <h2 className="text-lg font-bold mb-4" style={{ color: "#FFFFFF" }}>
             Menu
           </h2>
           <button
             onClick={handleNewConversation}
-            className="btn-glow w-full flex items-center justify-center gap-2 px-4 py-2 text-sm"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 text-sm rounded-lg transition-all duration-200 font-semibold"
+            style={{
+              backgroundColor: "#0A84FF",
+              color: "#FFFFFF",
+              boxShadow: "0 0 15px rgba(10, 132, 255, 0.3)",
+            }}
           >
             <Plus size={18} />
             Nouvelle Conversation
@@ -153,7 +180,10 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
         <div className="flex-1 overflow-y-auto flex flex-col">
           {/* Conversations List */}
           <div className="px-4 py-6">
-            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-3">
+            <h3
+              className="text-xs font-semibold uppercase tracking-wider px-2 mb-3"
+              style={{ color: "#666666" }}
+            >
               Conversations
             </h3>
             <div className="space-y-2">
@@ -161,17 +191,25 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                 conversations.map((conv) => (
                   <div
                     key={conv.id}
-                    className="group relative flex items-start gap-3 px-3 py-2 rounded-lg hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 transition-all duration-200 cursor-pointer"
+                    className="group relative flex items-start gap-3 px-3 py-2 rounded-lg transition-all duration-200 cursor-pointer"
+                    style={{
+                      backgroundColor: "transparent",
+                      border: "1px solid transparent",
+                    }}
                   >
                     <Clock
                       size={16}
-                      className="text-gray-400 dark:text-gray-600 flex-shrink-0 mt-1"
+                      className="flex-shrink-0 mt-1"
+                      style={{ color: "#666666" }}
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm text-black dark:text-white truncate font-medium">
+                      <p
+                        className="text-sm truncate font-medium"
+                        style={{ color: "#FFFFFF" }}
+                      >
                         {conv.title}
                       </p>
-                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                      <p className="text-xs" style={{ color: "#666666" }}>
                         {formatTimestamp(conv.timestamp)}
                       </p>
                     </div>
@@ -180,18 +218,19 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                         e.stopPropagation();
                         handleDeleteConversation(conv.id);
                       }}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded-md"
+                      className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-md"
                       title="Delete conversation"
+                      style={{
+                        backgroundColor: "rgba(239, 68, 68, 0.1)",
+                        color: "#EF4444",
+                      }}
                     >
-                      <Trash2
-                        size={16}
-                        className="text-red-600 dark:text-red-500"
-                      />
+                      <Trash2 size={16} />
                     </button>
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500 dark:text-gray-500 px-2">
+                <p className="text-sm px-2" style={{ color: "#666666" }}>
                   No conversations yet
                 </p>
               )}
@@ -199,15 +238,25 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
           </div>
 
           {/* Quick Settings Section */}
-          <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-900">
-            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-2 mb-3">
+          <div
+            className="px-4 py-4 border-t"
+            style={{ borderColor: "#1A1A1A" }}
+          >
+            <h3
+              className="text-xs font-semibold uppercase tracking-wider px-2 mb-3"
+              style={{ color: "#666666" }}
+            >
               Paramètres Rapides
             </h3>
             <nav className="space-y-2">
               {/* Paramètres */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 text-sm rounded-lg"
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                }}
               >
                 <Settings size={18} />
                 <span className="font-medium">Paramètres</span>
@@ -216,7 +265,11 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Profil */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 text-sm rounded-lg"
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                }}
               >
                 <User size={18} />
                 <span className="font-medium">Profil</span>
@@ -225,7 +278,11 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
               {/* Aide */}
               <button
                 onClick={handleMenuItemClick}
-                className="w-full flex items-center gap-3 px-4 py-2 text-left text-black dark:text-white transition-all duration-200 text-sm hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+                className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 text-sm rounded-lg"
+                style={{
+                  color: "#FFFFFF",
+                  backgroundColor: "transparent",
+                }}
               >
                 <HelpCircle size={18} />
                 <span className="font-medium">Aide</span>
@@ -235,14 +292,21 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
         </div>
 
         {/* Footer - Thème et Déconnexion */}
-        <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-900 space-y-2 flex-shrink-0">
+        <div
+          className="px-4 py-4 border-t space-y-2 flex-shrink-0"
+          style={{ borderColor: "#1A1A1A" }}
+        >
           {/* Thème */}
           <button
             onClick={() => {
               onThemeToggle();
               handleMenuItemClick();
             }}
-            className="w-full flex items-center justify-between px-4 py-2 text-black dark:text-white transition-all duration-200 hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+            className="w-full flex items-center justify-between px-4 py-2 transition-all duration-200 rounded-lg"
+            style={{
+              color: "#FFFFFF",
+              backgroundColor: "transparent",
+            }}
           >
             <div className="flex items-center gap-3">
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -250,22 +314,41 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                 {isDark ? "Mode Clair" : "Mode Sombre"}
               </span>
             </div>
-            <div className="w-9 h-5 rounded-full border-2 border-white/30 dark:border-white/20 bg-white/10 dark:bg-white/8 flex items-center p-0.5">
+            <div
+              className="w-9 h-5 rounded-full flex items-center p-0.5"
+              style={{
+                border: "2px solid #333333",
+                backgroundColor: "#1A1A1A",
+              }}
+            >
               <div
-                className={`w-4 h-4 rounded-full bg-black dark:bg-white transition-transform duration-300 ${
+                className={`w-4 h-4 rounded-full transition-transform duration-300 ${
                   isDark ? "translate-x-4" : "translate-x-0"
                 }`}
+                style={{ backgroundColor: "#FFFFFF" }}
               />
             </div>
           </button>
 
           {/* Déconnexion */}
           <button
-            onClick={handleMenuItemClick}
-            className="w-full flex items-center gap-3 px-4 py-2 text-left text-red-600 dark:text-red-500 transition-all duration-200 hover:backdrop-blur-md hover:bg-red-500/10 dark:hover:bg-red-500/8 rounded-lg"
+            onClick={async () => {
+              try {
+                await logout();
+                navigate("/register");
+                handleMenuItemClick();
+              } catch (err) {
+                console.error("Logout failed:", err);
+              }
+            }}
+            className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 rounded-lg font-medium text-sm"
+            style={{
+              color: "#EF4444",
+              backgroundColor: "transparent",
+            }}
           >
             <LogOut size={18} />
-            <span className="font-medium text-sm">Déconnexion</span>
+            <span>Déconnexion</span>
           </button>
         </div>
       </div>

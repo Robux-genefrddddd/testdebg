@@ -177,7 +177,7 @@ export default function Chatbot() {
   };
 
   return (
-    <div className="flex h-screen bg-white dark:bg-[#0a0a0a]">
+    <div className="flex h-screen" style={{ backgroundColor: "#000000" }}>
       {/* Fixed Sidebar */}
       <Sidebar
         conversations={conversations}
@@ -190,10 +190,19 @@ export default function Chatbot() {
       {/* Main Chat Area */}
       <div className="flex flex-col flex-1 overflow-hidden">
         {/* Header */}
-        <div className="border-b border-gray-200 dark:border-gray-900 px-4 py-3 sm:px-6 md:px-8 bg-white dark:bg-black flex items-center justify-between gap-4">
+        <div
+          className="border-b px-4 py-3 sm:px-6 md:px-8 flex items-center justify-between gap-4"
+          style={{
+            backgroundColor: "#0A0A0A",
+            borderColor: "#1A1A1A",
+          }}
+        >
           {/* Left: Title */}
           <div className="min-w-0">
-            <h1 className="text-xl sm:text-2xl font-bold text-black dark:text-white truncate">
+            <h1
+              className="text-xl sm:text-2xl font-bold truncate"
+              style={{ color: "#FFFFFF" }}
+            >
               Chat
             </h1>
           </div>
@@ -201,13 +210,27 @@ export default function Chatbot() {
           {/* Right: Action Buttons */}
           <div className="flex items-center gap-2 flex-shrink-0">
             {/* Quick Action Button */}
-            <button className="btn-icon-glass" title="New chat">
-              <Plus size={20} className="text-black dark:text-white" />
+            <button
+              className="p-2 rounded-lg transition-colors duration-200"
+              title="New chat"
+              style={{
+                backgroundColor: "#1A1A1A",
+                color: "#FFFFFF",
+              }}
+            >
+              <Plus size={20} />
             </button>
 
             {/* User Profile Button */}
-            <button className="btn-icon-glass" title="User profile">
-              <User size={20} className="text-black dark:text-white" />
+            <button
+              className="p-2 rounded-lg transition-colors duration-200"
+              title="User profile"
+              style={{
+                backgroundColor: "#1A1A1A",
+                color: "#FFFFFF",
+              }}
+            >
+              <User size={20} />
             </button>
 
             {/* Hamburger Menu - Only on mobile */}
@@ -216,7 +239,10 @@ export default function Chatbot() {
         </div>
 
         {/* Messages Container */}
-        <div className="flex-1 overflow-y-auto px-4 py-8 sm:px-8 bg-white dark:bg-black pb-32">
+        <div
+          className="flex-1 overflow-y-auto px-4 py-8 sm:px-8 pb-32"
+          style={{ backgroundColor: "#000000" }}
+        >
           <div className="max-w-4xl mx-auto space-y-6">
             {messages.map((message) => (
               <div
@@ -226,21 +252,32 @@ export default function Chatbot() {
                 } animate-fade-in`}
               >
                 <div
-                  className={`max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl px-5 py-3 rounded-2xl break-words ${
+                  className="max-w-xs sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-xl px-5 py-3 rounded-2xl break-words"
+                  style={
                     message.sender === "user"
-                      ? "bg-black dark:bg-white text-white dark:text-black rounded-br-sm"
-                      : "bg-gray-100 dark:bg-gray-900 text-black dark:text-white rounded-bl-sm border border-gray-200 dark:border-gray-800"
-                  }`}
+                      ? {
+                          backgroundColor: "#0A84FF",
+                          color: "#FFFFFF",
+                          borderRadius: "20px 20px 4px 20px",
+                        }
+                      : {
+                          backgroundColor: "#1A1A1A",
+                          color: "#FFFFFF",
+                          border: "1px solid #2A2A2A",
+                          borderRadius: "20px 20px 20px 4px",
+                        }
+                  }
                 >
                   <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
                     {message.content}
                   </p>
                   <p
-                    className={`text-xs mt-2.5 ${
+                    className="text-xs mt-2.5"
+                    style={
                       message.sender === "user"
-                        ? "text-gray-400 dark:text-gray-600"
-                        : "text-gray-500 dark:text-gray-500"
-                    }`}
+                        ? { color: "rgba(255, 255, 255, 0.6)" }
+                        : { color: "#666666" }
+                    }
                   >
                     {message.timestamp.toLocaleTimeString([], {
                       hour: "2-digit",
@@ -253,16 +290,32 @@ export default function Chatbot() {
 
             {isLoading && (
               <div className="flex justify-start animate-fade-in">
-                <div className="bg-gray-100 dark:bg-gray-900 text-black dark:text-white px-5 py-3 rounded-2xl rounded-bl-sm border border-gray-200 dark:border-gray-800">
+                <div
+                  className="px-5 py-3 rounded-2xl"
+                  style={{
+                    backgroundColor: "#1A1A1A",
+                    border: "1px solid #2A2A2A",
+                    borderRadius: "20px 20px 20px 4px",
+                  }}
+                >
                   <div className="flex space-x-2">
-                    <div className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.2s" }}
+                      className="w-2 h-2 rounded-full animate-bounce"
+                      style={{ backgroundColor: "#666666" }}
                     ></div>
                     <div
-                      className="w-2 h-2 bg-gray-400 dark:bg-gray-600 rounded-full animate-bounce"
-                      style={{ animationDelay: "0.4s" }}
+                      className="w-2 h-2 rounded-full animate-bounce"
+                      style={{
+                        backgroundColor: "#666666",
+                        animationDelay: "0.2s",
+                      }}
+                    ></div>
+                    <div
+                      className="w-2 h-2 rounded-full animate-bounce"
+                      style={{
+                        backgroundColor: "#666666",
+                        animationDelay: "0.4s",
+                      }}
                     ></div>
                   </div>
                 </div>
