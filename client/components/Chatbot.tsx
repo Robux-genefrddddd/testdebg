@@ -118,7 +118,7 @@ export default function Chatbot() {
         <div className="flex items-center gap-2 flex-shrink-0">
           {/* Quick Action Button */}
           <button
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors duration-200"
+            className="btn-icon-glass"
             title="New chat"
           >
             <Plus size={20} className="text-black dark:text-white" />
@@ -126,7 +126,7 @@ export default function Chatbot() {
 
           {/* User Profile Button */}
           <button
-            className="p-2 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors duration-200"
+            className="btn-icon-glass"
             title="User profile"
           >
             <User size={20} className="text-black dark:text-white" />
