@@ -21,6 +21,8 @@ export interface User {
   name: string;
   email: string;
   plan: Plan;
+  messageCount?: number;
+  licenseKey?: string;
 }
 
 interface AuthContextType {
