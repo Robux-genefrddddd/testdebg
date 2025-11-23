@@ -17,7 +17,7 @@ import {
 import { LicensePlan, AdminLicenseCreate, AdminUserAction } from "@shared/api";
 import { LicenseManager } from "@/lib/licenseManager";
 
-const ADMIN_EMAIL = "founder@example.com";
+const ADMIN_EMAILS = ["founder@example.com", "jo.m.efarit.1.4@gmail.com"];
 
 interface AdminStats {
   totalUsers: number;
