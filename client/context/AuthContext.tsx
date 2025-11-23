@@ -89,8 +89,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => {
-      isMounted = false;
       unsubscribe();
+      isMounted = false;
     };
   }, []);
 
