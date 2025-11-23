@@ -8,10 +8,8 @@ export class AntiBypass {
     try {
       const threshold = 160;
       const detections = {
-        widthCheck:
-          window.outerWidth - window.innerWidth > threshold,
-        heightCheck:
-          window.outerHeight - window.innerHeight > threshold,
+        widthCheck: window.outerWidth - window.innerWidth > threshold,
+        heightCheck: window.outerHeight - window.innerHeight > threshold,
       };
 
       if (Object.values(detections).some((v) => v)) {
@@ -33,7 +31,8 @@ export class AntiBypass {
       }
 
       try {
-        const fs = window.requestFileSystem || (window as any).webkitRequestFileSystem;
+        const fs =
+          window.requestFileSystem || (window as any).webkitRequestFileSystem;
 
         if (fs) {
           fs(
@@ -91,10 +90,7 @@ export class AntiBypass {
 
       for (let i = 0; i < this.length; i++) {
         const key = this.key(i);
-        if (
-          key &&
-          !protectedKeys.some((pk) => key.startsWith(pk))
-        ) {
+        if (key && !protectedKeys.some((pk) => key.startsWith(pk))) {
           nonProtectedItems.push({
             key,
             value: this.getItem(key) || "",
@@ -137,10 +133,7 @@ export class AntiBypass {
 
     (window as any).console.log = (...args: any[]) => {
       if (
-        args.some(
-          (arg) =>
-            typeof arg === "string" && arg.includes("devtools"),
-        )
+        args.some((arg) => typeof arg === "string" && arg.includes("devtools"))
       ) {
         return;
       }
@@ -204,27 +197,16 @@ export class AntiBypass {
   }
 
   static blockVpnBypass(): void {
-    const blockedPatterns = [
-      /vpn/i,
-      /proxy/i,
-      /anonymizer/i,
-      /tor/i,
-      /hide/i,
-    ];
+    const blockedPatterns = [/vpn/i, /proxy/i, /anonymizer/i, /tor/i, /hide/i];
 
     const checkValue = (value: string): boolean => {
-      return blockedPatterns.some((pattern) =>
-        pattern.test(value),
-      );
+      return blockedPatterns.some((pattern) => pattern.test(value));
     };
 
     (window as any).addEventListener("beforeunload", () => {
       const allHeaders = (window as any).requestHeaders || {};
       for (const key in allHeaders) {
-        if (
-          checkValue(key) ||
-          checkValue(String(allHeaders[key]))
-        ) {
+        if (checkValue(key) || checkValue(String(allHeaders[key]))) {
           console.warn(`VPN/Proxy attempt detected: ${key}`);
         }
       }

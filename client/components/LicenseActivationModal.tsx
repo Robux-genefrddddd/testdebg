@@ -78,7 +78,9 @@ export default function LicenseActivationModal({
                   type="text"
                   value={licenseKey}
                   onChange={(e) => {
-                    let value = e.target.value.toUpperCase().replace(/[^A-Z0-9-]/g, "");
+                    let value = e.target.value
+                      .toUpperCase()
+                      .replace(/[^A-Z0-9-]/g, "");
                     if (value.length > 0 && !value.includes("-")) {
                       const cleaned = value.replace(/-/g, "");
                       if (cleaned.length > 4) {

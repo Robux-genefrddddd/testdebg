@@ -48,7 +48,12 @@ export const handleCreateLicense: RequestHandler = async (req, res) => {
 
 export const handleUserAction: RequestHandler = async (req, res) => {
   try {
-    const { email: userEmail, action, reason, durationDays } = req.body as AdminUserAction & {
+    const {
+      email: userEmail,
+      action,
+      reason,
+      durationDays,
+    } = req.body as AdminUserAction & {
       email: string;
       durationDays?: number;
     };

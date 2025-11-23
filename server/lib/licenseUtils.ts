@@ -34,12 +34,14 @@ export function calculateExpiryDate(durationDays: number): Date {
 }
 
 export function isLicenseExpired(expiresAt: Date | string): boolean {
-  const expires = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  const expires =
+    typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
   return new Date() > expires;
 }
 
 export function getDaysRemaining(expiresAt: Date | string): number {
-  const expires = typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
+  const expires =
+    typeof expiresAt === "string" ? new Date(expiresAt) : expiresAt;
   const now = new Date();
   const diffMs = expires.getTime() - now.getTime();
   const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
@@ -47,7 +49,8 @@ export function getDaysRemaining(expiresAt: Date | string): number {
 }
 
 export function shouldResetMessageCount(lastResetDate: Date | string): boolean {
-  const lastReset = typeof lastResetDate === "string" ? new Date(lastResetDate) : lastResetDate;
+  const lastReset =
+    typeof lastResetDate === "string" ? new Date(lastResetDate) : lastResetDate;
   const now = new Date();
 
   const lastResetTime = new Date(lastReset);

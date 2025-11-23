@@ -40,9 +40,9 @@ export default function AdminPanel() {
     totalMessagesUsed: 0,
   });
 
-  const [activeTab, setActiveTab] = useState<"overview" | "licenses" | "users" | "maintenance">(
-    "overview",
-  );
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "licenses" | "users" | "maintenance"
+  >("overview");
 
   const [licenseForm, setLicenseForm] = useState({
     email: "",
@@ -221,24 +221,24 @@ export default function AdminPanel() {
         className="border-b flex gap-8 px-6"
         style={{ backgroundColor: "#0D0D0D", borderColor: "#1A1A1A" }}
       >
-        {(
-          ["overview", "licenses", "users", "maintenance"] as const
-        ).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveTab(tab)}
-            className={`py-4 px-2 font-semibold border-b-2 transition-colors ${
-              activeTab === tab
-                ? "border-blue-500 text-blue-500"
-                : "border-transparent text-slate-400 hover:text-white"
-            }`}
-          >
-            {tab === "overview" && "Aperçu"}
-            {tab === "licenses" && "Licences"}
-            {tab === "users" && "Utilisateurs"}
-            {tab === "maintenance" && "Maintenance"}
-          </button>
-        ))}
+        {(["overview", "licenses", "users", "maintenance"] as const).map(
+          (tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`py-4 px-2 font-semibold border-b-2 transition-colors ${
+                activeTab === tab
+                  ? "border-blue-500 text-blue-500"
+                  : "border-transparent text-slate-400 hover:text-white"
+              }`}
+            >
+              {tab === "overview" && "Aperçu"}
+              {tab === "licenses" && "Licences"}
+              {tab === "users" && "Utilisateurs"}
+              {tab === "maintenance" && "Maintenance"}
+            </button>
+          ),
+        )}
       </div>
 
       {/* Content */}
@@ -271,7 +271,10 @@ export default function AdminPanel() {
                     </h3>
                     <Users size={24} color="#0A84FF" />
                   </div>
-                  <p className="text-3xl font-bold" style={{ color: "#0A84FF" }}>
+                  <p
+                    className="text-3xl font-bold"
+                    style={{ color: "#0A84FF" }}
+                  >
                     {stats.totalUsers}
                   </p>
                 </div>
@@ -292,7 +295,10 @@ export default function AdminPanel() {
                     </h3>
                     <BarChart3 size={24} color="#0A84FF" />
                   </div>
-                  <p className="text-3xl font-bold" style={{ color: "#0A84FF" }}>
+                  <p
+                    className="text-3xl font-bold"
+                    style={{ color: "#0A84FF" }}
+                  >
                     {stats.activeSubscriptions}
                   </p>
                 </div>
@@ -313,7 +319,10 @@ export default function AdminPanel() {
                     </h3>
                     <Clock size={24} color="#0A84FF" />
                   </div>
-                  <p className="text-3xl font-bold" style={{ color: "#0A84FF" }}>
+                  <p
+                    className="text-3xl font-bold"
+                    style={{ color: "#0A84FF" }}
+                  >
                     {stats.totalMessagesUsed}
                   </p>
                 </div>
@@ -357,7 +366,10 @@ export default function AdminPanel() {
                       type="email"
                       value={licenseForm.email}
                       onChange={(e) =>
-                        setLicenseForm({ ...licenseForm, email: e.target.value })
+                        setLicenseForm({
+                          ...licenseForm,
+                          email: e.target.value,
+                        })
                       }
                       className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white"
                       placeholder="user@example.com"
@@ -433,11 +445,7 @@ export default function AdminPanel() {
                         onClick={copyKeyToClipboard}
                         className="p-2 bg-green-600 hover:bg-green-700 text-white rounded transition-colors"
                       >
-                        {copiedKey ? (
-                          <Check size={20} />
-                        ) : (
-                          <Copy size={20} />
-                        )}
+                        {copiedKey ? <Check size={20} /> : <Copy size={20} />}
                       </button>
                     </div>
                   </div>
@@ -577,10 +585,7 @@ export default function AdminPanel() {
                       >
                         Mode Maintenance Actif
                       </h3>
-                      <p
-                        className="text-sm mt-1"
-                        style={{ color: "#888888" }}
-                      >
+                      <p className="text-sm mt-1" style={{ color: "#888888" }}>
                         {maintenanceEnabled ? "Activé" : "Désactivé"}
                       </p>
                     </div>
@@ -606,9 +611,7 @@ export default function AdminPanel() {
                     </label>
                     <textarea
                       value={maintenanceMessage}
-                      onChange={(e) =>
-                        setMaintenanceMessage(e.target.value)
-                      }
+                      onChange={(e) => setMaintenanceMessage(e.target.value)}
                       className="w-full px-4 py-2 rounded-lg bg-slate-800 border border-slate-600 text-white"
                       rows={4}
                     />
@@ -616,11 +619,9 @@ export default function AdminPanel() {
                 </div>
               </div>
 
-              <p
-                className="text-sm mt-4"
-                style={{ color: "#888888" }}
-              >
-                💡 Conseil: Utilisez CTRL+F1 n'importe où dans l'application pour basculer rapidement le mode maintenance.
+              <p className="text-sm mt-4" style={{ color: "#888888" }}>
+                💡 Conseil: Utilisez CTRL+F1 n'importe où dans l'application
+                pour basculer rapidement le mode maintenance.
               </p>
             </div>
           )}

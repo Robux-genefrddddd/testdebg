@@ -9,24 +9,28 @@ A comprehensive, production-ready licensing and security system built on Firebas
 ### Frontend Components
 
 #### 1. **License Management System** (`client/lib/licenseManager.ts`)
+
 - Centralized license verification and activation
 - License key formatting and validation
 - Message limit calculations for each plan
 - Expiration tracking and countdown
 
 #### 2. **License Pop-ups** (`client/components/LicensePopups.tsx`)
+
 - Critical alerts (modal, modal-critical-dismissible modal)
 - Warning alerts (banner, dismissible)
 - Info alerts (bottom corner, dismissible)
 - Impossible to bypass or close without action
 
 #### 3. **License Activation Modal** (`client/components/LicenseActivationModal.tsx`)
+
 - Clean UI for entering license keys
 - Validation and formatting
 - Loading states
 - Error handling with localized messages
 
 #### 4. **Maintenance Mode Overlay** (`client/components/MaintenanceModeOverlay.tsx`)
+
 - Full-screen overlay blocking access
 - Customizable message display
 - Optional countdown timer
@@ -35,11 +39,13 @@ A comprehensive, production-ready licensing and security system built on Firebas
 ### Backend Services
 
 #### 1. **License Routes** (`server/routes/license.ts`)
+
 - `POST /api/license/verify` - Verify user's current license
 - `POST /api/license/activate` - Activate a license key
 - `POST /api/license/increment` - Increment message counter
 
 #### 2. **Admin Routes** (`server/routes/admin.ts`)
+
 - `POST /api/admin/license/create` - Generate license keys
 - `POST /api/admin/user/action` - Warn, suspend, or ban users
 - `POST /api/admin/maintenance` - Toggle maintenance mode
@@ -61,14 +67,16 @@ Comprehensive protection against common bypass techniques:
 ## Pricing Tiers
 
 ### 🆓 Gratuit (Free)
+
 - **Message Limit**: 10 messages
-- **Features**: 
+- **Features**:
   - Basic chatbot access
   - Message counting enforcement
   - License key required to upgrade
 - **Cost**: Free (forever)
 
 ### ⭐ Classic
+
 - **Message Limit**: 1,000 messages/day
 - **Duration**: Configurable (1 day - 1 year)
 - **Features**:
@@ -77,6 +85,7 @@ Comprehensive protection against common bypass techniques:
   - License key validation
 
 ### 🚀 Pro
+
 - **Message Limit**: 5,000 messages/day
 - **Duration**: Configurable (1 day - 1 year)
 - **Features**:
@@ -87,6 +96,7 @@ Comprehensive protection against common bypass techniques:
 ## Database Schema (Firebase Firestore)
 
 ### Collection: `users`
+
 ```json
 {
   "email": "user@example.com",
@@ -104,6 +114,7 @@ Comprehensive protection against common bypass techniques:
 ```
 
 ### Subcollection: `users/{userId}/license`
+
 ```json
 {
   "plan": "Classic|Pro",
@@ -117,6 +128,7 @@ Comprehensive protection against common bypass techniques:
 ```
 
 ### Subcollection: `users/{userId}/warnings`
+
 ```json
 {
   "type": "warning|suspension|expiration|ban",
@@ -130,6 +142,7 @@ Comprehensive protection against common bypass techniques:
 ```
 
 ### Collection: `licenseKeys`
+
 ```json
 {
   "key": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
@@ -145,6 +158,7 @@ Comprehensive protection against common bypass techniques:
 ```
 
 ### Collection: `config`
+
 ```json
 {
   "maintenance": {
@@ -214,7 +228,7 @@ All license checking is integrated with Firebase Authentication:
 When a license expires:
 
 1. **7 days before**: Warning banner appears
-2. **Day of expiration**: 
+2. **Day of expiration**:
    - Critical modal appears
    - User cannot send messages
    - Message count frozen
@@ -226,12 +240,14 @@ When a license expires:
 ## Security Features
 
 ### Server-Side Verification
+
 - All license checks happen server-side
 - Client cannot bypass message limits
 - License keys validated against Firestore
 - User role checked on every admin request
 
 ### Client-Side Protections
+
 - DevTools detection
 - Incognito mode detection
 - localStorage modification prevention
@@ -240,6 +256,7 @@ When a license expires:
 - User-Agent monitoring
 
 ### Combined Approach
+
 - Client catches obvious bypass attempts immediately
 - Server handles final validation
 - Multi-layer defense against sophisticated attacks
@@ -247,6 +264,7 @@ When a license expires:
 ## API Endpoints Reference
 
 ### License Verification
+
 ```bash
 POST /api/license/verify
 Content-Type: application/json
@@ -274,6 +292,7 @@ Response:
 ```
 
 ### License Activation
+
 ```bash
 POST /api/license/activate
 Content-Type: application/json
@@ -288,6 +307,7 @@ Response: Same as verify
 ```
 
 ### Increment Message Count
+
 ```bash
 POST /api/license/increment
 Content-Type: application/json
@@ -307,6 +327,7 @@ Response:
 ## Configuration
 
 ### Environment Variables
+
 ```
 VITE_FIREBASE_API_KEY=your-api-key
 VITE_FIREBASE_AUTH_DOMAIN=your-auth-domain
@@ -319,6 +340,7 @@ VITE_OPENROUTER_API_KEY=your-openrouter-key
 ```
 
 ### Admin Email
+
 Default admin: `founder@example.com`
 Change in `client/pages/AdminPanel.tsx` and `server/routes/admin.ts`
 
@@ -421,6 +443,7 @@ shared/
    - Configure admin email
 
 3. **Build**
+
    ```bash
    pnpm build
    ```
@@ -433,21 +456,25 @@ shared/
 ## Troubleshooting
 
 ### License key invalid
+
 - Ensure format: XXXX-XXXX-XXXX-XXXX...
 - Check key is active in Firestore
 - Verify hasn't been used by another account
 
 ### Messages not counting
+
 - Check `/api/license/increment` endpoint
 - Verify Firestore rules allow write
 - Check user email matches in requests
 
 ### Admin panel not opening
+
 - Verify logged in as founder@example.com
 - Press CTRL+F1 (not CMD+F1 on Mac)
 - Check browser console for errors
 
 ### Alerts not showing
+
 - Check `warnings` array in license response
 - Verify user has pending alerts
 - Clear browser cache and reload
@@ -468,6 +495,7 @@ shared/
 ## Support
 
 For issues or questions:
+
 1. Check logs in browser console
 2. Review Firestore database structure
 3. Verify Firebase configuration

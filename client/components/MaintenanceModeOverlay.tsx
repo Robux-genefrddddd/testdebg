@@ -21,9 +21,7 @@ export default function MaintenanceModeOverlay({
             <p className="text-slate-400 text-sm mb-2">
               Nous serons de retour dans
             </p>
-            <p className="text-xl font-bold text-yellow-400">
-              Bientôt
-            </p>
+            <p className="text-xl font-bold text-yellow-400">Bientôt</p>
           </div>
         )}
 

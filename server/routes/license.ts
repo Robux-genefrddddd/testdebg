@@ -5,11 +5,16 @@ import {
   Warning,
   SecurityAlert,
 } from "@shared/api";
-import { validateLicense, isLicenseExpired, getDaysRemaining } from "../lib/licenseUtils";
+import {
+  validateLicense,
+  isLicenseExpired,
+  getDaysRemaining,
+} from "../lib/licenseUtils";
 
 export const handleLicenseVerify: RequestHandler = async (req, res) => {
   try {
-    const { email, licenseKey, deviceId }: LicenseVerificationRequest = req.body;
+    const { email, licenseKey, deviceId }: LicenseVerificationRequest =
+      req.body;
 
     if (!email || !deviceId) {
       return res.status(400).json({
