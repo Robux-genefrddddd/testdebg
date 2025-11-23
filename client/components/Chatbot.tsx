@@ -98,14 +98,37 @@ export default function Chatbot() {
     setInput("");
     setIsLoading(true);
 
-    setTimeout(() => {
+    try {
+      const messagesForAPI = activeConversation.messages
+        .concat(userMessage)
+        .map((msg) => ({
+          role: msg.sender === "user" ? ("user" as const) : ("assistant" as const),
+          content: msg.content,
+        }));
+
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: messagesForAPI,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to get response from AI");
+      }
+
+      const data = await response.json();
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content:
-          "I'm a demonstration chatbot. This is where the AI response would appear. In a production app, this would be connected to a real API.",
+        content: data.content,
         sender: "assistant",
         timestamp: new Date(),
       };
+
       setConversations((prev) =>
         prev.map((conv) =>
           conv.id === activeConversationId
@@ -113,8 +136,24 @@ export default function Chatbot() {
             : conv,
         ),
       );
+    } catch (error) {
+      const errorMessage: Message = {
+        id: (Date.now() + 1).toString(),
+        content: `Error: ${error instanceof Error ? error.message : "Failed to get response"}`,
+        sender: "assistant",
+        timestamp: new Date(),
+      };
+
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === activeConversationId
+            ? { ...conv, messages: [...conv.messages, errorMessage] }
+            : conv,
+        ),
+      );
+    } finally {
       setIsLoading(false);
-    }, 800);
+    }
   };
 
   const handleNewConversation = () => {
