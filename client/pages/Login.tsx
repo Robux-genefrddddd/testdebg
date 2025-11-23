@@ -56,7 +56,7 @@ export default function Login() {
     <div
       className="min-h-screen flex items-center justify-center px-4 py-8"
       style={{
-        background: "linear-gradient(135deg, #0A84FF 0%, #0056B3 100%)",
+        backgroundColor: "#0A0A0A",
       }}
     >
       <div className="w-full max-w-md">
@@ -64,9 +64,9 @@ export default function Login() {
         <div
           className="rounded-2xl p-8 border"
           style={{
-            backgroundColor: "rgba(255, 255, 255, 0.95)",
-            borderColor: "rgba(255, 255, 255, 0.3)",
-            boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1)",
+            background: "linear-gradient(180deg, #F8FBFF 0%, #E6F0FF 100%)",
+            borderColor: "rgba(255, 255, 255, 0.2)",
+            boxShadow: "0 10px 40px rgba(0, 0, 0, 0.3)",
           }}
         >
 
