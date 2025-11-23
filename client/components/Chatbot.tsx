@@ -27,6 +27,22 @@ export default function Chatbot() {
   const navigate = useNavigate();
   const { user, canSendMessage, incrementMessageCount } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>(() => {
+    const savedConversations = localStorage.getItem("conversations");
+    if (savedConversations) {
+      try {
+        const parsed = JSON.parse(savedConversations);
+        return parsed.map((conv: any) => ({
+          ...conv,
+          timestamp: new Date(conv.timestamp),
+          messages: conv.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp),
+          })),
+        }));
+      } catch {
+        // If parsing fails, create a new conversation
+      }
+    }
     const newId = Date.now().toString();
     return [
       {
