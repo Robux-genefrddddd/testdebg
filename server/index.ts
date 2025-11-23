@@ -4,6 +4,7 @@ import cors from "cors";
 import { handleDemo } from "./routes/demo";
 import { handleChat } from "./routes/chat";
 import { handleSecurityCheck } from "./routes/security";
+import { handleCaptchaVerify } from "./routes/captcha";
 
 export function createServer() {
   const app = express();
@@ -26,6 +27,9 @@ export function createServer() {
 
   // Security check route
   app.post("/api/security/check", handleSecurityCheck);
+
+  // Captcha verification route
+  app.post("/api/captcha/verify", handleCaptchaVerify);
 
   return app;
 }
