@@ -24,29 +24,38 @@ export default function Register() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
 
     if (!formData.name.trim()) {
       setError("Name is required");
+      setIsLoading(false);
       return;
     }
 
     if (!formData.email.trim()) {
       setError("Email is required");
+      setIsLoading(false);
       return;
     }
 
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setError("Please enter a valid email");
+      setIsLoading(false);
       return;
     }
 
     if (!formData.password || formData.password.length < 6) {
       setError("Password must be at least 6 characters");
+      setIsLoading(false);
       return;
     }
 
-    register(formData.name, formData.email, formData.password);
-    navigate("/");
+    // Simulate registration delay for animation effect
+    setTimeout(() => {
+      register(formData.name, formData.email, formData.password);
+      setIsLoading(false);
+      navigate("/");
+    }, 600);
   };
 
   return (
