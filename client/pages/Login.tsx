@@ -297,9 +297,92 @@ export default function Login() {
       </div>
 
       <style>{`
+        @keyframes slideUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInDown {
+          from {
+            opacity: 0;
+            transform: translateY(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes borderGlow {
+          0%, 100% {
+            opacity: 0;
+          }
+          50% {
+            opacity: 1;
+          }
+        }
+
+        @keyframes shake {
+          0%, 100% {
+            transform: translateX(0);
+          }
+          10%, 30%, 50%, 70%, 90% {
+            transform: translateX(-5px);
+          }
+          20%, 40%, 60%, 80% {
+            transform: translateX(5px);
+          }
+        }
+
         @keyframes spin {
           to {
             transform: rotate(360deg);
+          }
+        }
+
+        @keyframes blueWave {
+          0% {
+            background: linear-gradient(180deg, rgba(10, 132, 255, 0.05) 0%, rgba(10, 132, 255, 0.02) 50%, transparent 100%);
+          }
+          50% {
+            background: linear-gradient(180deg, rgba(10, 132, 255, 0.25) 0%, rgba(10, 132, 255, 0.1) 50%, transparent 100%);
+          }
+          100% {
+            background: linear-gradient(180deg, rgba(10, 132, 255, 0.05) 0%, rgba(10, 132, 255, 0.02) 50%, transparent 100%);
+          }
+        }
+
+        @keyframes shootingStar {
+          0% {
+            transform: translateY(0) translateX(0);
+            opacity: 0;
+          }
+          10% {
+            opacity: 1;
+          }
+          90% {
+            opacity: 1;
+          }
+          100% {
+            transform: translateY(100vh) translateX(100px);
+            opacity: 0;
           }
         }
       `}</style>
