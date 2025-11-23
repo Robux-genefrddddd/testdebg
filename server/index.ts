@@ -5,6 +5,17 @@ import { handleDemo } from "./routes/demo";
 import { handleChat } from "./routes/chat";
 import { handleSecurityCheck } from "./routes/security";
 import { handleCaptchaVerify } from "./routes/captcha";
+import {
+  handleLicenseVerify,
+  handleLicenseActivate,
+  handleIncrementMessageCount,
+} from "./routes/license";
+import {
+  handleCreateLicense,
+  handleUserAction,
+  handleMaintenanceMode,
+  handleGetStats,
+} from "./routes/admin";
 
 export function createServer() {
   const app = express();
@@ -30,6 +41,17 @@ export function createServer() {
 
   // Captcha verification route
   app.post("/api/captcha/verify", handleCaptchaVerify);
+
+  // License routes
+  app.post("/api/license/verify", handleLicenseVerify);
+  app.post("/api/license/activate", handleLicenseActivate);
+  app.post("/api/license/increment", handleIncrementMessageCount);
+
+  // Admin routes
+  app.post("/api/admin/license/create", handleCreateLicense);
+  app.post("/api/admin/user/action", handleUserAction);
+  app.post("/api/admin/maintenance", handleMaintenanceMode);
+  app.get("/api/admin/stats", handleGetStats);
 
   return app;
 }

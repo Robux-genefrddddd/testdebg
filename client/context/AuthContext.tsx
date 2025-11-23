@@ -14,8 +14,15 @@ import {
 import { auth, db } from "@/lib/firebase";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { checkSecurityBeforeAuth } from "@/lib/securityCheck";
+import { LicenseManager } from "@/lib/licenseManager";
+import {
+  LicenseVerificationResponse,
+  Warning,
+  SecurityAlert,
+} from "@shared/api";
+import { getDeviceFingerprint } from "@/lib/deviceFingerprint";
 
-export type Plan = "Gratuit" | "Plus" | "Entreprise";
+export type Plan = "Gratuit" | "Classic" | "Pro";
 
 export interface User {
   id: string;
@@ -23,7 +30,11 @@ export interface User {
   email: string;
   plan: Plan;
   messageCount?: number;
+  messageLimit?: number;
   licenseKey?: string;
+  expiresAt?: string;
+  isBanned?: boolean;
+  isSuspended?: boolean;
 }
 
 interface AuthContextType {
@@ -36,6 +47,11 @@ interface AuthContextType {
   updatePlan: (plan: Plan) => Promise<void>;
   incrementMessageCount: () => Promise<void>;
   canSendMessage: () => boolean;
+  verifyLicense: () => Promise<LicenseVerificationResponse | null>;
+  activateLicense: (licenseKey: string) => Promise<void>;
+  warnings: Warning[];
+  alerts: SecurityAlert[];
+  maintenanceMode: boolean;
   error: string | null;
 }
 
@@ -47,10 +63,25 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [warnings, setWarnings] = useState<Warning[]>([]);
+  const [alerts, setAlerts] = useState<SecurityAlert[]>([]);
+  const [maintenanceMode, setMaintenanceMode] = useState(false);
+  const [deviceId, setDeviceId] = useState<string>("");
 
   useEffect(() => {
     let isMounted = true;
     let unsubscribe: (() => void) | null = null;
+
+    const initializeDeviceId = async () => {
+      try {
+        const fingerprint = await getDeviceFingerprint();
+        if (isMounted) {
+          setDeviceId(fingerprint.fingerprint);
+        }
+      } catch (err) {
+        console.error("Error getting device fingerprint:", err);
+      }
+    };
 
     const setupAuthListener = () => {
       unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
@@ -64,12 +95,42 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
               if (userDoc.exists()) {
                 const userData = userDoc.data();
-                setUser({
+                const newUser: User = {
                   id: firebaseUser.uid,
                   name: userData.name,
                   email: firebaseUser.email || "",
                   plan: userData.plan || "Gratuit",
-                });
+                  isBanned: userData.isBanned || false,
+                  isSuspended: userData.isSuspended || false,
+                };
+                setUser(newUser);
+
+                if (deviceId && newUser.email) {
+                  try {
+                    const licenseData = await LicenseManager.verifyLicense(
+                      newUser.email,
+                      deviceId,
+                    );
+                    if (isMounted) {
+                      setWarnings(licenseData.warnings || []);
+                      setAlerts(licenseData.alerts || []);
+                      setMaintenanceMode(licenseData.maintenanceMode || false);
+                      setUser((prev) =>
+                        prev
+                          ? {
+                              ...prev,
+                              messageCount: licenseData.messageCount,
+                              messageLimit: licenseData.messageLimit,
+                              expiresAt: licenseData.expiresAt,
+                              plan: licenseData.plan,
+                            }
+                          : null,
+                      );
+                    }
+                  } catch (licErr) {
+                    console.error("License verification error:", licErr);
+                  }
+                }
               } else {
                 setUser({
                   id: firebaseUser.uid,
@@ -96,6 +157,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             }
           } else {
             setUser(null);
+            setWarnings([]);
+            setAlerts([]);
           }
         } catch (err) {
           if (!isMounted) return;
@@ -109,6 +172,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
     };
 
+    initializeDeviceId();
     setupAuthListener();
 
     return () => {
@@ -259,8 +323,57 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const canSendMessage = (): boolean => {
     if (!user) return false;
-    if (user.plan !== "Gratuit") return true;
-    return (user.messageCount || 0) < 100;
+    if (user.isBanned || user.isSuspended) return false;
+    const limit = user.messageLimit || (user.plan === "Gratuit" ? 10 : 1000);
+    return (user.messageCount || 0) < limit;
+  };
+
+  const verifyLicense =
+    async (): Promise<LicenseVerificationResponse | null> => {
+      if (!user || !deviceId) return null;
+      try {
+        const licenseData = await LicenseManager.verifyLicense(
+          user.email,
+          deviceId,
+        );
+        if (licenseData) {
+          setWarnings(licenseData.warnings || []);
+          setAlerts(licenseData.alerts || []);
+          setMaintenanceMode(licenseData.maintenanceMode || false);
+          setUser((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  messageCount: licenseData.messageCount,
+                  messageLimit: licenseData.messageLimit,
+                  expiresAt: licenseData.expiresAt,
+                  plan: licenseData.plan,
+                  isBanned: licenseData.isBanned,
+                  isSuspended: licenseData.isSuspended,
+                }
+              : null,
+          );
+        }
+        return licenseData;
+      } catch (err) {
+        console.error("License verification error:", err);
+        return null;
+      }
+    };
+
+  const activateLicense = async (licenseKey: string): Promise<void> => {
+    if (!user || !deviceId) {
+      throw new Error("User not authenticated or device ID not available");
+    }
+    try {
+      await LicenseManager.activateLicense(user.email, licenseKey, deviceId);
+      await verifyLicense();
+    } catch (err) {
+      const errorMsg =
+        err instanceof Error ? err.message : "License activation failed";
+      setError(errorMsg);
+      throw err;
+    }
   };
 
   return (
@@ -275,6 +388,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updatePlan,
         incrementMessageCount,
         canSendMessage,
+        verifyLicense,
+        activateLicense,
+        warnings,
+        alerts,
+        maintenanceMode,
         error,
       }}
     >

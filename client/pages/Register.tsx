@@ -1,4 +1,4 @@
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import Turnstile from "react-turnstile";
@@ -13,7 +13,6 @@ export default function Register() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-  const captchaRef = useRef<any>(null);
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -73,9 +72,6 @@ export default function Register() {
       const captchaVerification = await verifyCaptchaToken(captchaToken);
       if (!captchaVerification.success) {
         setError(captchaVerification.error || "Captcha verification failed");
-        if (captchaRef.current) {
-          captchaRef.current.reset();
-        }
         setCaptchaToken("");
         return;
       }
@@ -307,7 +303,6 @@ export default function Register() {
                 }}
               >
                 <Turnstile
-                  ref={captchaRef}
                   sitekey={getSiteKey()}
                   onVerify={(token) => setCaptchaToken(token)}
                   onError={() => {

@@ -14,7 +14,11 @@ import Admin from "./pages/Admin";
 import AdminPanel from "./pages/AdminPanel";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import LicensePopups from "./components/LicensePopups";
+import LicenseActivationModal from "./components/LicenseActivationModal";
+import MaintenanceModeOverlay from "./components/MaintenanceModeOverlay";
 import { useEffect, useState } from "react";
+import { AntiBypass } from "./lib/antiBypass";
 
 const queryClient = new QueryClient();
 
@@ -57,27 +61,41 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 const AppRoutes = () => {
-  const [adminPanelOpen, setAdminPanelOpen] = useState(false);
+  const { warnings, alerts, maintenanceMode, user, verifyLicense } = useAuth();
+  const [showLicenseModal, setShowLicenseModal] = useState(false);
+  const [showAdminPanel, setShowAdminPanel] = useState(false);
 
   useEffect(() => {
+    AntiBypass.initializeAllProtections();
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.ctrlKey && e.key === "F1") {
         e.preventDefault();
-        setAdminPanelOpen(true);
+        setShowAdminPanel(true);
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, []);
 
-  if (adminPanelOpen) {
+    const licenseCheckInterval = setInterval(async () => {
+      if (user) {
+        await verifyLicense();
+      }
+    }, 60000);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      clearInterval(licenseCheckInterval);
+    };
+  }, [user, verifyLicense]);
+
+  if (showAdminPanel && user?.email === "founder@example.com") {
     return (
       <div>
         <AdminPanel />
         <button
-          onClick={() => setAdminPanelOpen(false)}
-          className="fixed top-4 right-4 bg-gray-700 text-white px-4 py-2 rounded"
+          onClick={() => setShowAdminPanel(false)}
+          className="fixed top-4 right-4 bg-gray-700 hover:bg-gray-800 text-white px-4 py-2 rounded z-[2000]"
         >
           Close
         </button>
@@ -85,38 +103,77 @@ const AppRoutes = () => {
     );
   }
 
+  if (maintenanceMode && !showAdminPanel) {
+    return (
+      <>
+        <Routes>
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="*" element={<MaintenanceModeOverlay />} />
+        </Routes>
+      </>
+    );
+  }
+
   return (
-    <Routes>
-      <Route path="/register" element={<Register />} />
-      <Route path="/login" element={<Login />} />
-      <Route
-        path="/"
-        element={
-          <ProtectedRoute>
-            <Index />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin"
-        element={
-          <ProtectedRoute>
-            <Admin />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/settings"
-        element={
-          <ProtectedRoute>
-            <Settings />
-          </ProtectedRoute>
-        }
-      />
-      <Route path="/admin-panel" element={<AdminPanel />} />
-      {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-      <Route path="*" element={<NotFound />} />
-    </Routes>
+    <>
+      {user && (
+        <>
+          <LicensePopups
+            warnings={warnings}
+            alerts={alerts}
+            onDismiss={() => {}}
+            onAction={(action) => {
+              if (action.includes("renew")) {
+                setShowLicenseModal(true);
+              }
+            }}
+          />
+          {showLicenseModal && user?.email && (
+            <LicenseActivationModal
+              email={user.email}
+              deviceId={user.id}
+              onActivationSuccess={() => {
+                setShowLicenseModal(false);
+                verifyLicense();
+              }}
+              onClose={() => setShowLicenseModal(false)}
+            />
+          )}
+        </>
+      )}
+
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Index />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin"
+          element={
+            <ProtectedRoute>
+              <Admin />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/admin-panel" element={<AdminPanel />} />
+        {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </>
   );
 };
 
