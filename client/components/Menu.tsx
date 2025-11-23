@@ -10,6 +10,8 @@ import {
   Trash2,
   Clock,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 interface Conversation {
   id: string;
