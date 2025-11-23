@@ -8,9 +8,11 @@ import {
   Edit2,
   Check,
   X,
+  Settings,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import AvatarModal from "./AvatarModal";
 
 interface Conversation {
   id: string;
