@@ -38,7 +38,9 @@ interface AuthContextType {
   error: string | null;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+export const AuthContext = createContext<AuthContextType | undefined>(
+  undefined,
+);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -76,7 +78,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           } catch (docErr) {
             if (!isMounted) return;
             console.error("Error fetching user document:", docErr);
-            setError(docErr instanceof Error ? docErr.message : "Failed to load user profile");
+            setError(
+              docErr instanceof Error
+                ? docErr.message
+                : "Failed to load user profile",
+            );
           }
         } else {
           setUser(null);
@@ -215,7 +221,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       await setDoc(
         doc(db, "users", user.id),
         { messageCount: newCount },
-        { merge: true }
+        { merge: true },
       );
       setUser({ ...user, messageCount: newCount });
     } catch (err) {

@@ -1,5 +1,5 @@
-import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css';
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark.css";
 
 export interface CodeBlock {
   code: string;
@@ -17,7 +17,7 @@ export const parseCodeBlocks = (text: string): (string | CodeBlock)[] => {
       parts.push(text.slice(lastIndex, match.index));
     }
 
-    const language = match[1] || 'plaintext';
+    const language = match[1] || "plaintext";
     const code = match[2].trim();
 
     parts.push({
@@ -42,7 +42,7 @@ export const highlightCode = (code: string, language: string): string => {
     }
     return hljs.highlightAuto(code).value;
   } catch (err) {
-    console.error('Syntax highlighting error:', err);
+    console.error("Syntax highlighting error:", err);
     return code;
   }
 };
@@ -52,7 +52,7 @@ export const copyToClipboard = async (text: string): Promise<boolean> => {
     await navigator.clipboard.writeText(text);
     return true;
   } catch (err) {
-    console.error('Copy to clipboard error:', err);
+    console.error("Copy to clipboard error:", err);
     return false;
   }
 };

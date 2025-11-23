@@ -106,10 +106,7 @@ export default function Settings() {
               borderColor: "#1A1A1A",
             }}
           >
-            <h2
-              className="text-xl font-bold mb-6"
-              style={{ color: "#FFFFFF" }}
-            >
+            <h2 className="text-xl font-bold mb-6" style={{ color: "#FFFFFF" }}>
               Account Information
             </h2>
 
@@ -169,10 +166,7 @@ export default function Settings() {
               borderColor: "#1A1A1A",
             }}
           >
-            <h2
-              className="text-xl font-bold mb-6"
-              style={{ color: "#FFFFFF" }}
-            >
+            <h2 className="text-xl font-bold mb-6" style={{ color: "#FFFFFF" }}>
               Current Plan
             </h2>
 
@@ -199,7 +193,10 @@ export default function Settings() {
                   </h3>
                 </div>
                 {user?.plan !== "Gratuit" && (
-                  <Zap size={32} style={{ color: getPlanColor(user?.plan || "") }} />
+                  <Zap
+                    size={32}
+                    style={{ color: getPlanColor(user?.plan || "") }}
+                  />
                 )}
               </div>
 
@@ -217,10 +214,7 @@ export default function Settings() {
                   borderLeft: "4px solid #0A84FF",
                 }}
               >
-                <p
-                  className="font-semibold mb-2"
-                  style={{ color: "#FFFFFF" }}
-                >
+                <p className="font-semibold mb-2" style={{ color: "#FFFFFF" }}>
                   Message Usage
                 </p>
                 <div className="w-full bg-gray-700 rounded-full h-2 mb-2">
@@ -229,7 +223,7 @@ export default function Settings() {
                     style={{
                       width: `${Math.min(
                         ((user?.messageCount || 0) / 100) * 100,
-                        100
+                        100,
                       )}%`,
                       backgroundColor: "#0A84FF",
                     }}

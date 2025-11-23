@@ -15,7 +15,9 @@ export default function AdminPanel() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState("");
   const [licenses, setLicenses] = useState<License[]>([]);
-  const [selectedPlan, setSelectedPlan] = useState<"Plus" | "Entreprise">("Plus");
+  const [selectedPlan, setSelectedPlan] = useState<"Plus" | "Entreprise">(
+    "Plus",
+  );
   const [copied, setCopied] = useState<string | null>(null);
 
   const ADMIN_PASSWORD = "Antoine80@";
@@ -212,7 +214,9 @@ export default function AdminPanel() {
                       <td className="py-3 px-4 text-gray-200 font-mono text-sm">
                         {license.key}
                       </td>
-                      <td className="py-3 px-4 text-gray-200">{license.plan}</td>
+                      <td className="py-3 px-4 text-gray-200">
+                        {license.plan}
+                      </td>
                       <td className="py-3 px-4 text-gray-400 text-sm">
                         {new Date(license.createdAt).toLocaleDateString()}
                       </td>

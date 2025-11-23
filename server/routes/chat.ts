@@ -20,11 +20,14 @@ export const handleChat: RequestHandler = async (req, res) => {
 
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
-      return res.status(500).json({ error: "OpenRouter API key not configured" });
+      return res
+        .status(500)
+        .json({ error: "OpenRouter API key not configured" });
     }
 
     // Clean system prompt
-    const SYSTEM_PROMPT = "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.";
+    const SYSTEM_PROMPT =
+      "You are a helpful assistant. Respond to user queries in a clear, concise, and friendly manner.";
 
     // Inject system prompt if not already present
     const finalMessages: ChatMessage[] =
@@ -32,21 +35,24 @@ export const handleChat: RequestHandler = async (req, res) => {
         ? messages
         : [{ role: "system" as const, content: SYSTEM_PROMPT }, ...messages];
 
-    const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-        "HTTP-Referer": req.get("origin") || "http://localhost:8080",
-        "X-Title": "Chat Application",
+    const response = await fetch(
+      "https://openrouter.ai/api/v1/chat/completions",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+          "HTTP-Referer": req.get("origin") || "http://localhost:8080",
+          "X-Title": "Chat Application",
+        },
+        body: JSON.stringify({
+          model: "openai/gpt-3.5-turbo",
+          messages: finalMessages,
+          temperature: 0.7,
+          max_tokens: 1024,
+        }),
       },
-      body: JSON.stringify({
-        model: "openai/gpt-3.5-turbo",
-        messages: finalMessages,
-        temperature: 0.7,
-        max_tokens: 1024,
-      }),
-    });
+    );
 
     if (!response.ok) {
       let errorData;
@@ -62,7 +68,8 @@ export const handleChat: RequestHandler = async (req, res) => {
       }
       console.error("OpenRouter API error:", errorData);
       return res.status(response.status).json({
-        error: errorData.error || `OpenRouter API error: ${response.statusText}`,
+        error:
+          errorData.error || `OpenRouter API error: ${response.statusText}`,
         details: errorData,
       });
     }

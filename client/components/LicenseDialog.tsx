@@ -54,9 +54,7 @@ export default function LicenseDialog({ isOpen, onClose }: LicenseDialogProps) {
     updatePlan(license.plan)
       .then(() => {
         const updated = licenses.map((lic) =>
-          lic.id === license.id
-            ? { ...lic, usedBy: user?.id }
-            : lic
+          lic.id === license.id ? { ...lic, usedBy: user?.id } : lic,
         );
         localStorage.setItem("admin_licenses", JSON.stringify(updated));
         setLicenseKey("");
@@ -80,7 +78,8 @@ export default function LicenseDialog({ isOpen, onClose }: LicenseDialogProps) {
             <strong>Current Plan:</strong> {user?.plan}
           </p>
           <p className="text-sm text-gray-300">
-            <strong>Messages Used:</strong> {user?.messageCount || 0}/100 (Free Plan)
+            <strong>Messages Used:</strong> {user?.messageCount || 0}/100 (Free
+            Plan)
           </p>
         </div>
 

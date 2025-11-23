@@ -358,7 +358,7 @@ export default function Chatbot() {
                             code={part.code}
                             language={part.language}
                           />
-                        )
+                        ),
                       )}
                     </div>
                   )}

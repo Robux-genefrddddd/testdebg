@@ -23,7 +23,9 @@ export default function CodeBlock({ code, language }: CodeBlockProps) {
   return (
     <div className="my-4 rounded-lg overflow-hidden bg-[#282c34] border border-[#3f4451]">
       <div className="flex items-center justify-between bg-[#21252b] px-4 py-2 border-b border-[#3f4451]">
-        <span className="text-sm font-mono text-[#abb2bf]">{language || "plaintext"}</span>
+        <span className="text-sm font-mono text-[#abb2bf]">
+          {language || "plaintext"}
+        </span>
         <button
           onClick={handleCopy}
           className="p-1.5 hover:bg-[#3f4451] rounded transition-colors"
