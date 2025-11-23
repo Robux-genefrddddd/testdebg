@@ -34,6 +34,17 @@ export const handleChat: RequestHandler = async (req, res) => {
         .json({ error: "OpenRouter API key not configured" });
     }
 
+    // Inject system prompt if not already present
+    const messagesWithSystem = messages[0]?.role === "system"
+      ? messages
+      : [
+          {
+            role: "system" as const,
+            content: `You are a helpful, knowledgeable AI assistant. You provide clear, accurate, and thoughtful responses to user questions. You're professional yet approachable, and you always strive to understand the user's needs fully before providing a response. You can help with a wide range of topics including programming, writing, analysis, problem-solving, and general knowledge. Always be honest about the limitations of your knowledge, and encourage users to verify important information from authoritative sources when appropriate.`,
+          },
+          ...messages,
+        ];
+
     const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -43,8 +54,8 @@ export const handleChat: RequestHandler = async (req, res) => {
         "X-Title": "Chat Application",
       },
       body: JSON.stringify({
-        model: "openrouter/auto",
-        messages: messages,
+        model: "xai/grok-4.1-fast",
+        messages: messagesWithSystem,
         temperature: 0.7,
         max_tokens: 1024,
       }),
