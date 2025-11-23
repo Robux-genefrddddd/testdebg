@@ -67,25 +67,35 @@ export const handleChat: RequestHandler = async (req, res) => {
       },
     );
 
+    if (!response.ok) {
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        const errorText = await response.text();
+        console.error("OpenRouter API error:", errorText);
+        return res.status(response.status).json({
+          error: `OpenRouter API error: ${response.statusText}`,
+          details: errorText,
+        });
+      }
+      console.error("OpenRouter API error:", errorData);
+      return res.status(response.status).json({
+        error: errorData.error || `OpenRouter API error: ${response.statusText}`,
+        details: errorData,
+      });
+    }
+
     let data;
     try {
       data = await response.json();
     } catch (parseError) {
-      const errorText = await response.text();
-      console.error("Failed to parse OpenRouter API response:", errorText);
-      return res.status(response.status || 500).json({
+      console.error("Failed to parse OpenRouter API response:", parseError);
+      return res.status(500).json({
         error: "Failed to parse OpenRouter API response",
-        details: errorText,
       });
     }
 
-    if (!response.ok) {
-      console.error("OpenRouter API error:", data);
-      return res.status(response.status).json({
-        error: data.error || `OpenRouter API error: ${response.statusText}`,
-        details: data,
-      });
-    }
     const content = data.choices?.[0]?.message?.content || "";
 
     if (!content) {
