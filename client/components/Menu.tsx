@@ -288,14 +288,21 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
         </div>
 
         {/* Footer - Thème et Déconnexion */}
-        <div className="px-4 py-4 border-t border-gray-200 dark:border-gray-900 space-y-2 flex-shrink-0">
+        <div
+          className="px-4 py-4 border-t space-y-2 flex-shrink-0"
+          style={{ borderColor: "#1A1A1A" }}
+        >
           {/* Thème */}
           <button
             onClick={() => {
               onThemeToggle();
               handleMenuItemClick();
             }}
-            className="w-full flex items-center justify-between px-4 py-2 text-black dark:text-white transition-all duration-200 hover:backdrop-blur-md hover:bg-white/10 dark:hover:bg-white/8 rounded-lg"
+            className="w-full flex items-center justify-between px-4 py-2 transition-all duration-200 rounded-lg"
+            style={{
+              color: "#FFFFFF",
+              backgroundColor: "transparent",
+            }}
           >
             <div className="flex items-center gap-3">
               {isDark ? <Sun size={18} /> : <Moon size={18} />}
@@ -303,22 +310,37 @@ export default function Menu({ isDark, onThemeToggle }: MenuProps) {
                 {isDark ? "Mode Clair" : "Mode Sombre"}
               </span>
             </div>
-            <div className="w-9 h-5 rounded-full border-2 border-white/30 dark:border-white/20 bg-white/10 dark:bg-white/8 flex items-center p-0.5">
+            <div
+              className="w-9 h-5 rounded-full flex items-center p-0.5"
+              style={{
+                border: "2px solid #333333",
+                backgroundColor: "#1A1A1A",
+              }}
+            >
               <div
-                className={`w-4 h-4 rounded-full bg-black dark:bg-white transition-transform duration-300 ${
+                className={`w-4 h-4 rounded-full transition-transform duration-300 ${
                   isDark ? "translate-x-4" : "translate-x-0"
                 }`}
+                style={{ backgroundColor: "#FFFFFF" }}
               />
             </div>
           </button>
 
           {/* Déconnexion */}
           <button
-            onClick={handleMenuItemClick}
-            className="w-full flex items-center gap-3 px-4 py-2 text-left text-red-600 dark:text-red-500 transition-all duration-200 hover:backdrop-blur-md hover:bg-red-500/10 dark:hover:bg-red-500/8 rounded-lg"
+            onClick={() => {
+              logout();
+              navigate("/register");
+              handleMenuItemClick();
+            }}
+            className="w-full flex items-center gap-3 px-4 py-2 text-left transition-all duration-200 rounded-lg font-medium text-sm"
+            style={{
+              color: "#EF4444",
+              backgroundColor: "transparent",
+            }}
           >
             <LogOut size={18} />
-            <span className="font-medium text-sm">Déconnexion</span>
+            <span>Déconnexion</span>
           </button>
         </div>
       </div>
