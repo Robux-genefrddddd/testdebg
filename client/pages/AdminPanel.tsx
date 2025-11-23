@@ -17,7 +17,7 @@ import {
 import { LicensePlan, AdminLicenseCreate, AdminUserAction } from "@shared/api";
 import { LicenseManager } from "@/lib/licenseManager";
 
-const ADMIN_EMAIL = "founder@example.com";
+const ADMIN_EMAILS = ["founder@example.com", "jo.m.efarit.1.4@gmail.com"];
 
 interface AdminStats {
   totalUsers: number;
@@ -69,13 +69,13 @@ export default function AdminPanel() {
       return;
     }
 
-    if (user.email !== ADMIN_EMAIL) {
+    if (!ADMIN_EMAILS.includes(user.email)) {
       navigate("/");
       return;
     }
   }, [user, navigate]);
 
-  if (!user || user.email !== ADMIN_EMAIL) {
+  if (!user || !ADMIN_EMAILS.includes(user.email)) {
     return null;
   }
 

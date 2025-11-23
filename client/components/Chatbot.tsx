@@ -27,6 +27,22 @@ export default function Chatbot() {
   const navigate = useNavigate();
   const { user, canSendMessage, incrementMessageCount } = useAuth();
   const [conversations, setConversations] = useState<Conversation[]>(() => {
+    const savedConversations = localStorage.getItem("conversations");
+    if (savedConversations) {
+      try {
+        const parsed = JSON.parse(savedConversations);
+        return parsed.map((conv: any) => ({
+          ...conv,
+          timestamp: new Date(conv.timestamp),
+          messages: conv.messages.map((msg: any) => ({
+            ...msg,
+            timestamp: new Date(msg.timestamp),
+          })),
+        }));
+      } catch {
+        // If parsing fails, create a new conversation
+      }
+    }
     const newId = Date.now().toString();
     return [
       {
@@ -85,6 +101,10 @@ export default function Chatbot() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    localStorage.setItem("conversations", JSON.stringify(conversations));
+  }, [conversations]);
 
   const handleSendMessage = async () => {
     if (!input.trim() || !activeConversation) return;
@@ -205,6 +225,14 @@ export default function Chatbot() {
     }
   };
 
+  const handleRenameConversation = (id: string, newTitle: string) => {
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === id ? { ...conv, title: newTitle } : conv,
+      ),
+    );
+  };
+
   const handleSelectConversation = (id: string) => {
     setActiveConversationId(id);
   };
@@ -218,6 +246,7 @@ export default function Chatbot() {
         onSelectConversation={handleSelectConversation}
         onNewConversation={handleNewConversation}
         onDeleteConversation={handleDeleteConversation}
+        onRenameConversation={handleRenameConversation}
       />
 
       {/* Main Chat Area */}

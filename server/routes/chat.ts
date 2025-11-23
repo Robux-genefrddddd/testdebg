@@ -46,7 +46,7 @@ export const handleChat: RequestHandler = async (req, res) => {
           "X-Title": "Chat Application",
         },
         body: JSON.stringify({
-          model: "openai/gpt-3.5-turbo",
+          model: "x-ai/grok-4.1-fast",
           messages: finalMessages,
           temperature: 0.7,
           max_tokens: 1024,
@@ -54,16 +54,17 @@ export const handleChat: RequestHandler = async (req, res) => {
       },
     );
 
+    const responseText = await response.text();
+
     if (!response.ok) {
       let errorData;
       try {
-        errorData = await response.json();
+        errorData = JSON.parse(responseText);
       } catch {
-        const errorText = await response.text();
-        console.error("OpenRouter API error:", errorText);
+        console.error("OpenRouter API error:", responseText);
         return res.status(response.status).json({
           error: `OpenRouter API error: ${response.statusText}`,
-          details: errorText,
+          details: responseText,
         });
       }
       console.error("OpenRouter API error:", errorData);
@@ -76,7 +77,7 @@ export const handleChat: RequestHandler = async (req, res) => {
 
     let data;
     try {
-      data = await response.json();
+      data = JSON.parse(responseText);
     } catch (parseError) {
       console.error("Failed to parse OpenRouter API response:", parseError);
       return res.status(500).json({

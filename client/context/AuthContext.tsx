@@ -35,6 +35,8 @@ export interface User {
   expiresAt?: string;
   isBanned?: boolean;
   isSuspended?: boolean;
+  avatar?: string;
+  avatarType?: "emoji" | "image" | "url";
 }
 
 interface AuthContextType {
@@ -49,6 +51,10 @@ interface AuthContextType {
   canSendMessage: () => boolean;
   verifyLicense: () => Promise<LicenseVerificationResponse | null>;
   activateLicense: (licenseKey: string) => Promise<void>;
+  updateAvatar: (
+    avatar: string,
+    type: "emoji" | "image" | "url",
+  ) => Promise<void>;
   warnings: Warning[];
   alerts: SecurityAlert[];
   maintenanceMode: boolean;
@@ -305,6 +311,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const updateAvatar = async (
+    avatar: string,
+    type: "emoji" | "image" | "url",
+  ): Promise<void> => {
+    if (!user) return;
+
+    try {
+      setError(null);
+      await setDoc(
+        doc(db, "users", user.id),
+        { avatar, avatarType: type },
+        { merge: true },
+      );
+      setUser({ ...user, avatar, avatarType: type });
+    } catch (err) {
+      const errorMsg =
+        err instanceof Error ? err.message : "Failed to update avatar";
+      setError(errorMsg);
+      throw err;
+    }
+  };
+
   const incrementMessageCount = async (): Promise<void> => {
     if (!user) return;
 
@@ -390,6 +418,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         canSendMessage,
         verifyLicense,
         activateLicense,
+        updateAvatar,
         warnings,
         alerts,
         maintenanceMode,

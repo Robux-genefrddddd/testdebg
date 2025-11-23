@@ -1,7 +1,18 @@
 import { useState } from "react";
-import { Plus, LogOut, Trash2, Clock, UserCircle } from "lucide-react";
+import {
+  Plus,
+  LogOut,
+  Trash2,
+  Clock,
+  UserCircle,
+  Edit2,
+  Check,
+  X,
+  Settings,
+} from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import AvatarModal from "./AvatarModal";
 
 interface Conversation {
   id: string;
@@ -15,6 +26,7 @@ interface SidebarProps {
   onSelectConversation: (id: string) => void;
   onNewConversation: () => void;
   onDeleteConversation: (id: string) => void;
+  onRenameConversation: (id: string, newTitle: string) => void;
 }
 
 export default function Sidebar({
@@ -23,9 +35,13 @@ export default function Sidebar({
   onSelectConversation,
   onNewConversation,
   onDeleteConversation,
+  onRenameConversation,
 }: SidebarProps) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingTitle, setEditingTitle] = useState("");
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
 
   const handleLogout = async () => {
     try {
@@ -62,14 +78,26 @@ export default function Sidebar({
       <div className="px-6 py-6 border-b" style={{ borderColor: "#1A1A1A" }}>
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div
-            className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center"
+          <button
+            onClick={() => setShowAvatarModal(true)}
+            className="flex-shrink-0 w-12 h-12 rounded-full flex items-center justify-center text-2xl transition-transform hover:scale-110 relative group"
             style={{
               backgroundColor: "#1A1A1A",
+              border: "2px solid #0A84FF",
+              boxShadow: "0 0 10px rgba(10, 132, 255, 0.2)",
             }}
+            title="Click to customize avatar"
           >
-            <UserCircle size={28} style={{ color: "#888888" }} />
-          </div>
+            {user?.avatar || "👤"}
+            <div
+              className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+              style={{
+                backgroundColor: "rgba(10, 132, 255, 0.2)",
+              }}
+            >
+              <Settings size={16} style={{ color: "#0A84FF" }} />
+            </div>
+          </button>
 
           {/* User Info */}
           <div className="flex-1 min-w-0">
@@ -111,55 +139,120 @@ export default function Sidebar({
         <div className="space-y-2">
           {conversations.length > 0 ? (
             conversations.map((conv) => (
-              <div
-                key={conv.id}
-                className="group relative flex items-start gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200"
-                style={
-                  activeConversationId === conv.id
-                    ? {
-                        backgroundColor: "rgba(10, 132, 255, 0.15)",
-                        border: "1px solid #0A84FF",
-                        boxShadow: "0 0 12px rgba(10, 132, 255, 0.2)",
-                      }
-                    : {
-                        border: "1px solid transparent",
-                      }
-                }
-                onClick={() => onSelectConversation(conv.id)}
-              >
-                <Clock
-                  size={16}
-                  className="flex-shrink-0 mt-1"
-                  style={{
-                    color:
-                      activeConversationId === conv.id ? "#0A84FF" : "#666666",
-                  }}
-                />
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-sm truncate font-medium"
-                    style={{ color: "#FFFFFF" }}
+              <div key={conv.id}>
+                {editingId === conv.id ? (
+                  <div
+                    className="flex items-center gap-2 px-3 py-2.5 rounded-lg"
+                    style={{ backgroundColor: "rgba(10, 132, 255, 0.1)" }}
                   >
-                    {conv.title}
-                  </p>
-                  <p className="text-xs" style={{ color: "#666666" }}>
-                    {formatTimestamp(conv.timestamp)}
-                  </p>
-                </div>
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    onDeleteConversation(conv.id);
-                  }}
-                  className="opacity-0 group-hover:opacity-100 transition-opacity duration-200 p-1 rounded-md"
-                  title="Delete conversation"
-                  style={{
-                    backgroundColor: "rgba(239, 68, 68, 0.1)",
-                    color: "#EF4444",
-                  }}
-                >
-                  <Trash2 size={16} />
-                </button>
+                    <input
+                      type="text"
+                      value={editingTitle}
+                      onChange={(e) => setEditingTitle(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          if (editingTitle.trim()) {
+                            onRenameConversation(conv.id, editingTitle);
+                          }
+                          setEditingId(null);
+                        } else if (e.key === "Escape") {
+                          setEditingId(null);
+                        }
+                      }}
+                      autoFocus
+                      className="flex-1 px-2 py-1 rounded text-sm bg-black/30 border border-blue-500"
+                      style={{ color: "#FFFFFF" }}
+                    />
+                    <button
+                      onClick={() => {
+                        if (editingTitle.trim()) {
+                          onRenameConversation(conv.id, editingTitle);
+                        }
+                        setEditingId(null);
+                      }}
+                      className="p-1 rounded hover:bg-blue-500/20"
+                      style={{ color: "#0A84FF" }}
+                    >
+                      <Check size={16} />
+                    </button>
+                    <button
+                      onClick={() => setEditingId(null)}
+                      className="p-1 rounded hover:bg-red-500/20"
+                      style={{ color: "#EF4444" }}
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                ) : (
+                  <div
+                    className="group relative flex items-start gap-3 px-3 py-2.5 rounded-lg cursor-pointer transition-all duration-200"
+                    style={
+                      activeConversationId === conv.id
+                        ? {
+                            backgroundColor: "rgba(10, 132, 255, 0.15)",
+                            border: "1px solid #0A84FF",
+                            boxShadow: "0 0 12px rgba(10, 132, 255, 0.2)",
+                          }
+                        : {
+                            border: "1px solid transparent",
+                          }
+                    }
+                    onClick={() => onSelectConversation(conv.id)}
+                  >
+                    <Clock
+                      size={16}
+                      className="flex-shrink-0 mt-1"
+                      style={{
+                        color:
+                          activeConversationId === conv.id
+                            ? "#0A84FF"
+                            : "#666666",
+                      }}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p
+                        className="text-sm truncate font-medium"
+                        style={{ color: "#FFFFFF" }}
+                      >
+                        {conv.title}
+                      </p>
+                      <p className="text-xs" style={{ color: "#666666" }}>
+                        {formatTimestamp(conv.timestamp)}
+                      </p>
+                    </div>
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setEditingId(conv.id);
+                          setEditingTitle(conv.title);
+                        }}
+                        className="p-1 rounded-md"
+                        title="Rename conversation"
+                        style={{
+                          backgroundColor: "rgba(59, 130, 246, 0.1)",
+                          color: "#3B82F6",
+                        }}
+                      >
+                        <Edit2 size={16} />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDeleteConversation(conv.id);
+                        }}
+                        className="p-1 rounded-md"
+                        title="Delete conversation"
+                        style={{
+                          backgroundColor: "rgba(239, 68, 68, 0.1)",
+                          color: "#EF4444",
+                        }}
+                      >
+                        <Trash2 size={16} />
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             ))
           ) : (
@@ -198,6 +291,12 @@ export default function Sidebar({
           <span>Déconnexion</span>
         </button>
       </div>
+
+      {/* Avatar Modal */}
+      <AvatarModal
+        isOpen={showAvatarModal}
+        onClose={() => setShowAvatarModal(false)}
+      />
     </div>
   );
 }

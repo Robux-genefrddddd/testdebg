@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
-import { Send, Paperclip, Smile } from "lucide-react";
+import { Send, Paperclip, Smile, ArrowRight } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 interface InputAreaProps {
   value: string;
@@ -16,6 +17,7 @@ export default function InputArea({
   disabled = false,
   isLoading = false,
 }: InputAreaProps) {
+  const { user } = useAuth();
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -94,40 +96,50 @@ export default function InputArea({
               rows={1}
             />
 
-            {/* Send Button */}
+            {/* Send Button with Avatar */}
             <button
               onClick={onSend}
               disabled={!value.trim() || disabled || isLoading}
-              className="flex-shrink-0 p-2 rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-shrink-0 relative p-1 rounded-full transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               style={{
                 backgroundColor:
                   !value.trim() || disabled || isLoading
-                    ? "rgba(10, 132, 255, 0.3)"
-                    : "rgba(10, 132, 255, 0.8)",
+                    ? "rgba(10, 132, 255, 0.2)"
+                    : "rgba(10, 132, 255, 0.3)",
                 boxShadow:
                   !value.trim() || disabled || isLoading
                     ? "none"
-                    : "0 0 15px rgba(10, 132, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)",
+                    : "0 0 15px rgba(10, 132, 255, 0.4)",
               }}
               onMouseEnter={(e) => {
                 if (!(!value.trim() || disabled || isLoading)) {
                   (e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 0 25px rgba(10, 132, 255, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.15)";
+                    "0 0 25px rgba(10, 132, 255, 0.6)";
                   (e.currentTarget as HTMLElement).style.backgroundColor =
-                    "rgba(10, 132, 255, 0.95)";
+                    "rgba(10, 132, 255, 0.5)";
                 }
               }}
               onMouseLeave={(e) => {
                 if (!(!value.trim() || disabled || isLoading)) {
                   (e.currentTarget as HTMLElement).style.boxShadow =
-                    "0 0 15px rgba(10, 132, 255, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1)";
+                    "0 0 15px rgba(10, 132, 255, 0.4)";
                   (e.currentTarget as HTMLElement).style.backgroundColor =
-                    "rgba(10, 132, 255, 0.8)";
+                    "rgba(10, 132, 255, 0.3)";
                 }
               }}
               title="Send message"
             >
-              <Send size={20} className="text-white" />
+              <div className="w-8 h-8 rounded-full flex items-center justify-center text-lg bg-blue-600 relative group">
+                {user?.avatar || "👤"}
+                <div
+                  className="absolute inset-0 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  style={{
+                    backgroundColor: "rgba(10, 132, 255, 0.4)",
+                  }}
+                >
+                  <ArrowRight size={16} style={{ color: "#FFFFFF" }} />
+                </div>
+              </div>
             </button>
           </div>
         </div>
