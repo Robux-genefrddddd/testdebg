@@ -32,18 +32,6 @@ export const handleCreateLicense: RequestHandler = async (req, res) => {
     const expiryDate = calculateExpiryDate(durationDays);
     const messageLimit = calculateMessageLimit(plan);
 
-    const licenseKeysRef = collection(db, "licenseKeys");
-    await setDoc(doc(licenseKeysRef), {
-      key: licenseKey,
-      plan,
-      email,
-      expiresAt: expiryDate.toISOString(),
-      isActive: true,
-      messageLimit,
-      createdAt: new Date().toISOString(),
-      createdByAdmin: adminEmail,
-    });
-
     return res.json({
       success: true,
       key: licenseKey,
