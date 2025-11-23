@@ -176,12 +176,6 @@ export default function Chatbot() {
     setActiveConversationId(id);
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  };
 
   return (
     <div className="flex h-screen bg-white dark:bg-[#0a0a0a]">
